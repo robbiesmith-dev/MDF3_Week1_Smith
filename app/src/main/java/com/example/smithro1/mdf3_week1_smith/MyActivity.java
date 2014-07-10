@@ -2,7 +2,10 @@ package com.example.smithro1.mdf3_week1_smith;
 
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,6 +36,12 @@ public class MyActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my);
 
+        //Get Data from intent
+        Intent intent = getIntent();
+        Uri data  = intent.getData();
+
+        Log.e("DATA FROM EMAIL IS ", "" + data);
+
         //Link member vars with layout counterparts
         mWebView = (WebView)findViewById(R.id.webView);
         //Set Client to custom class that extends WebViewClient and Overrides method normally sends user to default browser
@@ -46,7 +55,16 @@ public class MyActivity extends Activity {
             }
 
         });
-        mWebView.loadUrl("http://www.google.com");
+
+        if (data != null)
+        {
+            mWebView.loadUrl(data.toString());
+        }
+        else
+        {
+            mWebView.loadUrl("http://www.google.com");
+        }
+
 
         mEditText = (EditText)findViewById(R.id.editText);
         //mEditText.setText(mWebView.getUrl());
