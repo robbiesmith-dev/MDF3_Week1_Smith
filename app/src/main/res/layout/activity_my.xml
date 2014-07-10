@@ -11,6 +11,9 @@
     <EditText
         android:layout_width="260dp"
         android:layout_height="wrap_content"
+        android:inputType="textNoSuggestions"
+        android:singleLine="true"
+        android:selectAllOnFocus="true"
         android:id="@+id/editText" />
     <Button
         android:layout_width="wrap_content"

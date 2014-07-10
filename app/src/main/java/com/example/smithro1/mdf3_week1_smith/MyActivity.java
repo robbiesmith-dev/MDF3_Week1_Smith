@@ -35,12 +35,21 @@ public class MyActivity extends Activity {
 
         //Link member vars with layout counterparts
         mWebView = (WebView)findViewById(R.id.webView);
-        mWebView.setWebViewClient(new client());
+        //Set Client to custom class that extends WebViewClient and Overrides method normally sends user to default browser
+        mWebView.setWebViewClient(new client()
+        {
+            //This method detects when the webview on screen is finished loading
+            public void onPageFinished(WebView view, String url)
+            {
+                //this sets the text of the editText to the url of the current webView, even after back, forward or refresh buttons are pressed
+                mEditText.setText(mWebView.getUrl());
+            }
+
+        });
         mWebView.loadUrl("http://www.google.com");
 
         mEditText = (EditText)findViewById(R.id.editText);
-        mEditText.setHint("www.google.com");
-
+        //mEditText.setText(mWebView.getUrl());
         mGoButton = (Button)findViewById(R.id.goButton);
         mGoButton.setOnClickListener(new View.OnClickListener(){
 
@@ -55,7 +64,7 @@ public class MyActivity extends Activity {
                 }else{
                     mWebView.loadUrl("http://www." + mURLString);
                 }
-               
+
             }
         });
 
@@ -74,11 +83,40 @@ public class MyActivity extends Activity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
+        switch (item.getItemId())
+        {
+            case R.id.action_back:
+
+                goBack();
+                break;
+            case R.id.action_forward:
+
+                goForward();
+                break;
+            case R.id.action_refresh:
+
+                refresh();
+                break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void refresh()
+    {
+        mWebView.reload();
+       // mEditText.setText(mWebView.getUrl());
+    }
+
+    private void goBack()
+    {
+        mWebView.goBack();
+        //mEditText.setText(mWebView.getUrl());
+    }
+
+    private void goForward()
+    {
+        mWebView.goForward();
+       // mEditText.setText(mWebView.getUrl());
     }
 
     //Subclass WebViewClient to prevent app from launching default browser
@@ -88,6 +126,8 @@ public class MyActivity extends Activity {
         public boolean shouldOverrideUrlLoading(WebView view, String url)
         {
             view.loadUrl(url);
+
+           // mEditText.setText(mWebView.getUrl());
 
             return true;
         }
