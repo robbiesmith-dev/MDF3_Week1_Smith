@@ -4,16 +4,35 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.EditText;
+
+
+//Robert Smith
+//MDF3 Term 1407
+//Web Browser
+//This will be a Single Activity application that will serve as a Web Browser
 
 
 public class MyActivity extends Activity {
+
+    private WebView mWebView;
+    private EditText mEditText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my);
-    }
 
+        //Link member vars with layout counterparts
+        mWebView = (WebView)findViewById(R.id.webView);
+        mEditText = (EditText)findViewById(R.id.editText);
+
+        mWebView.setWebViewClient(new client());
+        mWebView.loadUrl("http://www.google.com");
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -32,5 +51,17 @@ public class MyActivity extends Activity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    //Subclass WebViewClient to prevent app from launching default browser
+    class client extends WebViewClient
+    {
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, String url)
+        {
+            view.loadUrl(url);
+
+            return true;
+        }
     }
 }
