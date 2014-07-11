@@ -37,10 +37,7 @@ public class MyActivity extends Activity {
         setContentView(R.layout.activity_my);
 
         //Get Data from intent
-        Intent intent = getIntent();
-        Uri data  = intent.getData();
-
-        Log.e("DATA FROM EMAIL IS ", "" + data);
+        Uri data = getUrlIntent();
 
         //Link member vars with layout counterparts
         mWebView = (WebView)findViewById(R.id.webView);
@@ -62,15 +59,26 @@ public class MyActivity extends Activity {
         }
         else
         {
-            mWebView.loadUrl("http://www.google.com");
+            mWebView.loadUrl("http://www.stackoverflow.com");
         }
 
 
         mEditText = (EditText)findViewById(R.id.editText);
-        //mEditText.setText(mWebView.getUrl());
-        mGoButton = (Button)findViewById(R.id.goButton);
-        mGoButton.setOnClickListener(new View.OnClickListener(){
+        //set listener to select all text when edit text is clicked to allow user to quickly change url
+        mEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    mEditText.setSelection(mEditText.getText().toString().length());
+                }
+            }
+        });
 
+
+        mGoButton = (Button)findViewById(R.id.goButton);
+
+        //CLICKED GO
+        mGoButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 //load url string - first check string format and format it correctly if user if lazy
@@ -87,6 +95,14 @@ public class MyActivity extends Activity {
         });
 
 
+    }
+
+    private Uri getUrlIntent() {
+        Intent intent = getIntent();
+        Uri data  = intent.getData();
+
+        Log.e("DATA FROM EMAIL IS ", "" + data);
+        return data;
     }
 
     @Override
@@ -115,8 +131,23 @@ public class MyActivity extends Activity {
 
                 refresh();
                 break;
+            case R.id.action_share:
+
+                share();
+                break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void share()
+    {
+        String link = mWebView.getUrl();
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TEXT, link);
+        intent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Check this out!!");
+
+        startActivity(Intent.createChooser(intent, "Share"));
     }
 
     private void refresh()
